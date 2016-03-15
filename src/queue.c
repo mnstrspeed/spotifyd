@@ -81,6 +81,31 @@ bool queue_add_track(sp_track *track)
 	return track_added;
 }
 
+bool queue_add_album(sp_session *session, sp_album *album)
+{
+	sp_albumbrowse_create(session, album, on_albumbrowse_complete, queue_add_track);
+	/* There doesn't appear to be a check for success without a blocking
+	   while(!sp_albumbrowse_is_loaded(...)) */
+	return 1;
+}
+
+bool queue_add_playlist(sp_playlist *playlist)
+{
+	bool playlist_added = 0;
+
+	if (sp_playlist_is_loaded(playlist))
+	{
+		int j;
+		for (j = 0; j < sp_playlist_num_tracks(playlist); ++j)
+		{
+			queue_add_track(sp_playlist_track(playlist, j));
+		}
+		playlist_added = 1;
+	}
+
+	return playlist_added;
+}
+
 int queue_get_next()
 {
 	int next_track;

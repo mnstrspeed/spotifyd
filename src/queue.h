@@ -35,5 +35,7 @@ sp_track *queue_get_current();
 bool queue_del_track(unsigned trackn);
 void queue_shuffle();
 bool queue_add_track(sp_track *track);
+bool queue_add_album(sp_session *session, sp_album *album);
+bool queue_add_playlist(sp_playlist *playlist);
 void queue_init();
 void queue_clear();

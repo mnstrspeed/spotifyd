@@ -65,6 +65,23 @@ void command_link(sp_session *session, const struct command * const command)
 		queue_add_track(t);
 		sock_send_str(command->sockfd, "Added track to queue.\n");
 	}
+	else if (sp_link_type(l) == SP_LINKTYPE_ALBUM)
+	{
+		sp_album *a = sp_link_as_album(l);
+		queue_add_album(session, a);
+
+		sock_send_str(command->sockfd, "Adding album ");
+		sock_send_str(command->sockfd, sp_album_name(a));
+		sock_send_str(command->sockfd, " by ");
+		sock_send_str(command->sockfd, sp_artist_name(sp_album_artist(a)));
+		sock_send_str(command->sockfd, " to queue.\n");
+	}
+	else if (sp_link_type(l) == SP_LINKTYPE_PLAYLIST)
+	{
+		sp_playlist *pl = sp_playlist_create(session, l);
+		queue_add_playlist(pl);
+		sock_send_str(command->sockfd, "Adding playlist.\n");
+	}
 	else
 	{
 		sock_send_str(command->sockfd, "Link is valid but its type is not supported. Only links to tracks are supported.\n");
